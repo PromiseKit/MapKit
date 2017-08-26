@@ -16,7 +16,7 @@ class Test_MKDirections_Swift: XCTestCase {
         let rq = MKDirectionsRequest()
         let directions = MockDirections(request: rq)
 
-        directions.calculate().then { _ in
+        directions.calculate().done { _ in
             ex.fulfill()
         }
 
@@ -34,7 +34,7 @@ class Test_MKDirections_Swift: XCTestCase {
         }
 
         let rq = MKDirectionsRequest()
-        MockDirections(request: rq).calculateETA().then { (rsp: MKETAResponse) in
+        MockDirections(request: rq).calculateETA().done { rsp in
             ex.fulfill()
         }
 
@@ -54,7 +54,7 @@ class Test_MKSnapshotter_Swift: XCTestCase {
         }
 
         let snapshotter = MockSnapshotter()
-        snapshotter.start().then { _ in
+        snapshotter.start().done { _ in
             ex.fulfill()
         }
 
