@@ -16,6 +16,6 @@ import PromiseKit
 extension MKMapSnapshotter {
     /// Starts generating the snapshot using the options set in this object.
     public func start() -> Promise<MKMapSnapshot> {
-        return Promise(.pending) { start(completionHandler: $0.resolve) }
+        return Promise { start(completionHandler: $0.resolve) }
     }
 }
