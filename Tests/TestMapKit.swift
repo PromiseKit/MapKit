@@ -1,4 +1,5 @@
 import PromiseKit
+import PMKCancel
 import PMKMapKit
 import MapKit
 import XCTest
@@ -57,6 +58,73 @@ class Test_MKSnapshotter_Swift: XCTestCase {
         snapshotter.start().done { _ in
             ex.fulfill()
         }
+
+        waitForExpectations(timeout: 1, handler: nil)
+    }
+}
+
+//////////////////////////////////////////////////////////// Cancellation
+
+extension Test_MKDirections_Swift {
+    func test_cancel_directions_response() {
+        let ex = expectation(description: "")
+
+        class MockDirections: MKDirections {
+            override func calculate(completionHandler: @escaping MKDirectionsHandler) {
+                completionHandler(MKDirectionsResponse(), nil)
+            }
+        }
+
+        let rq = MKDirectionsRequest()
+        let directions = MockDirections(request: rq)
+
+        directions.calculateCC().done { _ in
+            XCTFail()
+        }.catch(policy: .allErrors) {
+            $0.isCancelled ? ex.fulfill() : XCTFail()
+        }.cancel()
+
+        waitForExpectations(timeout: 1, handler: nil)
+    }
+
+
+    func test_cancel_ETA_response() {
+        let ex = expectation(description: "")
+
+        class MockDirections: MKDirections {
+            override func calculateETA(completionHandler: @escaping MKETAHandler) {
+                completionHandler(MKETAResponse(), nil)
+            }
+        }
+
+        let rq = MKDirectionsRequest()
+        MockDirections(request: rq).calculateETACC().done { _ in
+            XCTFail()
+        }.catch(policy: .allErrors) {
+            $0.isCancelled ? ex.fulfill() : XCTFail()
+        }.cancel()
+
+        waitForExpectations(timeout: 1, handler: nil)
+    }
+
+}
+
+extension Test_MKSnapshotter_Swift {
+    func test_cancel() {
+        let ex = expectation(description: "")
+
+        class MockSnapshotter: MKMapSnapshotter {
+            override func start(completionHandler: @escaping MKMapSnapshotCompletionHandler) {
+                completionHandler(MKMapSnapshot(), nil)
+            }
+        }
+
+        let snapshotter = MockSnapshotter()
+        snapshotter.startCC().done { _ in
+            XCTFail()
+        }.catch(policy: .allErrors) {
+            $0.isCancelled ? ex.fulfill() : XCTFail()
+        }.cancel()
 
         waitForExpectations(timeout: 1, handler: nil)
     }
