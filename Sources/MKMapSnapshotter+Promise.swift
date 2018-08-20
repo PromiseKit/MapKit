@@ -14,8 +14,15 @@ import PromiseKit
     import PromiseKit
 */
 extension MKMapSnapshotter {
+#if swift(>=4.2)
+    /// Starts generating the snapshot using the options set in this object.
+    public func start() -> Promise<Snapshot> {
+        return Promise { start(completionHandler: $0.resolve) }
+    }
+#else
     /// Starts generating the snapshot using the options set in this object.
     public func start() -> Promise<MKMapSnapshot> {
         return Promise { start(completionHandler: $0.resolve) }
     }
+#endif
 }
