@@ -16,11 +16,15 @@ import PromiseKit
 extension MKMapSnapshotter {
 #if swift(>=4.2)
     /// Starts generating the snapshot using the options set in this object.
+    /// - Note: cancelling this promise will cancel the underlying task
+    /// - SeeAlso: [Cancellation](http://promisekit.org/docs/)
     public func start() -> Promise<Snapshot> {
         return Promise<Snapshot>(cancellableTask: MKMapSnapshotterTask(self)) { start(completionHandler: $0.resolve) }
     }
 #else
     /// Starts generating the snapshot using the options set in this object.
+    /// - Note: cancelling this promise will cancel the underlying task
+    /// - SeeAlso: [Cancellation](http://promisekit.org/docs/)
     public func start() -> Promise<MKMapSnapshot> {
         return Promise<MKMapSnapshot>(cancellableTask: MKMapSnapshotterTask(self)) { start(completionHandler: $0.resolve) }
     }
@@ -43,20 +47,4 @@ private class MKMapSnapshotterTask: CancellableTask {
     var isCancelled: Bool {
         return cancelAttempted && !snapshotter.isLoading
     }
-}
-
-//////////////////////////////////////////////////////////// Cancellable wrapper
-
-extension MKMapSnapshotter {
-#if swift(>=4.2)
-    /// Starts generating the snapshot using the options set in this object.
-    public func cancellableStart() -> CancellablePromise<Snapshot> {
-        return cancellable(start())
-    }
-#else
-    /// Starts generating the snapshot using the options set in this object.
-    public func cancellableStart() -> CancellablePromise<MKMapSnapshot> {
-        return cancellable(start())
-    }
-#endif
 }

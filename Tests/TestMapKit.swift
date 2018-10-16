@@ -77,7 +77,7 @@ extension Test_MKDirections_Swift {
         let rq = MKDirectionsRequest()
         let directions = MockDirections(request: rq)
 
-        directions.cancellableCalculate().done { _ in
+        cancellable(directions.calculate()).done { _ in
             XCTFail()
         }.catch(policy: .allErrors) {
             $0.isCancelled ? ex.fulfill() : XCTFail()
@@ -97,7 +97,7 @@ extension Test_MKDirections_Swift {
         }
 
         let rq = MKDirectionsRequest()
-        MockDirections(request: rq).cancellableCalculateETA().done { _ in
+        cancellable(MockDirections(request: rq).calculateETA()).done { _ in
             XCTFail()
         }.catch(policy: .allErrors) {
             $0.isCancelled ? ex.fulfill() : XCTFail()
@@ -119,7 +119,7 @@ extension Test_MKSnapshotter_Swift {
         }
 
         let snapshotter = MockSnapshotter()
-        snapshotter.cancellableStart().done { _ in
+        cancellable(snapshotter.start()).done { _ in
             XCTFail()
         }.catch(policy: .allErrors) {
             $0.isCancelled ? ex.fulfill() : XCTFail()

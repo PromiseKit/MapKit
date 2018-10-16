@@ -16,21 +16,29 @@ import PromiseKit
 extension MKDirections {
 #if swift(>=4.2)
     /// Begins calculating the requested route information asynchronously.
+    /// - Note: cancelling this promise will cancel the underlying task
+    /// - SeeAlso: [Cancellation](http://promisekit.org/docs/)
     public func calculate() -> Promise<Response> {
         return Promise<Response>(cancellableTask: MKDirectionsTask(self)) { calculate(completionHandler: $0.resolve) }
     }
 
     /// Begins calculating the requested travel-time information asynchronously.
+    /// - Note: cancelling this promise will cancel the underlying task
+    /// - SeeAlso: [Cancellation](http://promisekit.org/docs/)
     public func calculateETA() -> Promise<ETAResponse> {
         return Promise<ETAResponse>(cancellableTask: MKDirectionsTask(self)) { calculateETA(completionHandler: $0.resolve) }
     }
 #else
     /// Begins calculating the requested route information asynchronously.
+    /// - Note: cancelling this promise will cancel the underlying task
+    /// - SeeAlso: [Cancellation](http://promisekit.org/docs/)
     public func calculate() -> Promise<MKDirectionsResponse> {
         return Promise<MKDirectionsResponse>(cancellableTask: MKDirectionsTask(self)) { calculate(completionHandler: $0.resolve) }
     }
 
     /// Begins calculating the requested travel-time information asynchronously.
+    /// - Note: cancelling this promise will cancel the underlying task
+    /// - SeeAlso: [Cancellation](http://promisekit.org/docs/)
     public func calculateETA() -> Promise<MKETAResponse> {
         return Promise<MKETAResponse>(cancellableTask: MKDirectionsTask(self)) { calculateETA(completionHandler: $0.resolve) }
     }
@@ -53,30 +61,4 @@ private class MKDirectionsTask: CancellableTask {
     var isCancelled: Bool {
         return cancelAttempted && !directions.isCalculating
     }
-}
-
-//////////////////////////////////////////////////////////// Cancellable wrappers
-
-extension MKDirections {
-#if swift(>=4.2)
-    /// Begins calculating the requested route information asynchronously.
-    public func cancellableCalculate() -> CancellablePromise<Response> {
-        return cancellable(calculate())
-    }
-
-    /// Begins calculating the requested travel-time information asynchronously.
-    public func cancellableCalculateETA() -> CancellablePromise<ETAResponse> {
-        return cancellable(calculateETA())
-    }
-#else
-    /// Begins calculating the requested route information asynchronously.
-    public func cancellableCalculate() -> CancellablePromise<MKDirectionsResponse> {
-        return cancellable(calculate())
-    }
-
-    /// Begins calculating the requested travel-time information asynchronously.
-    public func cancellableCalculateETA() -> CancellablePromise<MKETAResponse> {
-        return cancellable(calculateETA())
-    }
-#endif
 }
