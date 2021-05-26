@@ -23,7 +23,7 @@ let package = Package(
         .target(
             name: "PMKMapKit",
             dependencies: ["PromiseKit"],
-            path: "Sources/MapKit",
+            path: "Sources",
             exclude: exclude),
         .testTarget(
             name: "PMKMapKitTests",
